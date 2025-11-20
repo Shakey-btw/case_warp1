@@ -4,10 +4,90 @@ import Image from 'next/image'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { RocketSlider } from '@/components/RocketSlider'
-import { useState } from 'react'
+import { useState, useRef, useCallback } from 'react'
+
+// Function to play input field typing sound - different from button sounds
+const playTypingSound = () => {
+  const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+  
+  // Create a soft "tick" or "pop" sound - different character from button sounds
+  const oscillator = audioContext.createOscillator()
+  const gainNode = audioContext.createGain()
+  
+  oscillator.connect(gainNode)
+  gainNode.connect(audioContext.destination)
+  
+  // Higher frequency, triangle wave for a softer, more subtle sound
+  oscillator.frequency.value = 1000
+  oscillator.type = 'triangle' // Triangle wave for a softer, gentler sound
+  
+  // Very quick, subtle envelope
+  const now = audioContext.currentTime
+  gainNode.gain.setValueAtTime(0, now)
+  gainNode.gain.linearRampToValueAtTime(0.08, now + 0.002) // Very quick attack
+  gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.04) // Quick, subtle decay
+  
+  oscillator.start(now)
+  oscillator.stop(now + 0.04)
+}
+
+// Function to play retro game click sound
+const playClickSound = () => {
+  const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+  
+  // Retro game "blip" sound - short, punchy
+  const oscillator = audioContext.createOscillator()
+  const gainNode = audioContext.createGain()
+  
+  oscillator.connect(gainNode)
+  gainNode.connect(audioContext.destination)
+  
+  oscillator.frequency.value = 400
+  oscillator.type = 'square'
+  
+  const now = audioContext.currentTime
+  gainNode.gain.setValueAtTime(0, now)
+  gainNode.gain.linearRampToValueAtTime(0.2, now + 0.001) // Very quick attack
+  gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.05) // Quick decay
+  
+  oscillator.start(now)
+  oscillator.stop(now + 0.05)
+}
+
+// Function to play retro game hover/selection sound
+const playHoverSound = () => {
+  const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+  
+  // Retro game "select" sound - higher pitched, quick
+  const oscillator = audioContext.createOscillator()
+  const gainNode = audioContext.createGain()
+  
+  oscillator.connect(gainNode)
+  gainNode.connect(audioContext.destination)
+  
+  oscillator.frequency.value = 600
+  oscillator.type = 'sine' // Softer for hover
+  
+  const now = audioContext.currentTime
+  gainNode.gain.setValueAtTime(0, now)
+  gainNode.gain.linearRampToValueAtTime(0.12, now + 0.002)
+  gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.06)
+  
+  oscillator.start(now)
+  oscillator.stop(now + 0.06)
+}
 
 export default function Home() {
   const [sliderValue, setSliderValue] = useState([0])
+  const [linkedinUrl, setLinkedinUrl] = useState('')
+  const [email, setEmail] = useState('')
+  
+  const handleInputChange = useCallback((setter: (value: string) => void) => {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      playTypingSound()
+      setter(e.target.value)
+    }
+  }, [])
   return (
     <main className="relative w-full h-screen overflow-hidden">
       {/* Background Image */}
@@ -19,6 +99,39 @@ export default function Home() {
           className="object-cover"
           priority
         />
+      </div>
+
+      {/* Leaderboard Button - Top Right */}
+      <div className="absolute top-[32px] right-[32px] z-20">
+        <Button
+          className="text-center transition-all duration-100"
+          onClick={playClickSound}
+          style={{
+            backgroundColor: '#1D7DE4',
+            border: '1.2px solid black',
+            boxShadow: '2px 2px 0px 0px rgba(0, 0, 0, 1)',
+            paddingTop: '10px',
+            paddingBottom: '10px',
+            paddingLeft: '16px',
+            paddingRight: '16px',
+            borderRadius: '6px',
+            fontFamily: 'var(--font-luckiest)',
+            color: 'white',
+            fontSize: '12px',
+            fontWeight: 'bold',
+            letterSpacing: '0.1em',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.boxShadow = 'none'
+            e.currentTarget.style.transform = 'translate(2px, 2px)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.boxShadow = '2px 2px 0px 0px rgba(0, 0, 0, 1)'
+            e.currentTarget.style.transform = 'translate(0, 0)'
+          }}
+        >
+          LEADERBOARD
+        </Button>
       </div>
 
       {/* Content Container */}
@@ -39,7 +152,7 @@ export default function Home() {
               fontFamily: 'var(--font-luckiest)',
             }}
           >
-            Got the bA**<span style={{ fontFamily: 'var(--font-merriweather)' }}>$</span>?
+            READY TO RI<span style={{ fontFamily: 'var(--font-merriweather)' }}>$</span>K IT?
           </h1>
 
           {/* Subheading: "See who's GOING BANKRUPT and WHO'S WINNING" */}
@@ -48,6 +161,7 @@ export default function Home() {
             style={{
               fontSize: '28px',
               lineHeight: '40px',
+              letterSpacing: '1.5%',
               fontFamily: 'var(--font-luckiest)',
               WebkitTextStroke: '3px black',
               WebkitTextFillColor: '#FCF8D2',
@@ -188,6 +302,8 @@ export default function Home() {
               <Input
                 type="text"
                 placeholder="https://www.linkedin.com/company/joinwarp/"
+                value={linkedinUrl}
+                onChange={handleInputChange(setLinkedinUrl)}
                 className="w-full [&::placeholder]:text-gray-400"
                 style={{
                   backgroundColor: 'white',
@@ -238,7 +354,7 @@ export default function Home() {
               <RocketSlider
                 value={sliderValue}
                 onValueChange={setSliderValue}
-                max={1000}
+                max={300}
                 min={0}
                 step={1}
                 className="w-full"
@@ -266,6 +382,8 @@ export default function Home() {
               <Input
                 type="email"
                 placeholder="NILS@JOINWARP.COM"
+                value={email}
+                onChange={handleInputChange(setEmail)}
                 className="w-full [&::placeholder]:text-gray-400"
                 style={{
                   backgroundColor: 'white',
@@ -285,7 +403,8 @@ export default function Home() {
             {/* Button Section */}
             <div className="mt-4">
               <Button
-                className="w-full text-center"
+                className="w-full text-center transition-all duration-100"
+                onClick={playClickSound}
                 style={{
                   backgroundColor: '#1D7DE4',
                   border: '1.2px solid black',
@@ -299,6 +418,14 @@ export default function Home() {
                   color: 'white',
                   fontSize: '14px',
                   fontWeight: 'bold',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = 'none'
+                  e.currentTarget.style.transform = 'translate(2px, 2px)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = '2px 2px 0px 0px rgba(0, 0, 0, 1)'
+                  e.currentTarget.style.transform = 'translate(0, 0)'
                 }}
               >
                 START YOUR BET

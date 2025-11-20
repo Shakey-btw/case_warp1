@@ -82,7 +82,7 @@ interface RocketSliderProps {
 const RocketSlider = React.forwardRef<
   React.ElementRef<typeof SliderPrimitive.Root>,
   RocketSliderProps
->(({ className, value, onValueChange, max = 1000, min = 0, step = 1, ...props }, ref) => {
+>(({ className, value, onValueChange, max = 300, min = 0, step = 1, ...props }, ref) => {
   const currentValue = value[0] || 0
   const percentage = ((currentValue - min) / (max - min)) * 100
 
