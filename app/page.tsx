@@ -22,7 +22,7 @@ export default function Home() {
       </div>
 
       {/* Content Container */}
-      <div className="relative z-10 h-full px-[130px] pt-[80px] pb-[72px] flex flex-col">
+      <div className="relative z-10 h-full px-[130px] pt-[80px] pb-[72px] flex flex-col justify-center">
         {/* Top Div */}
         <div className="flex flex-col">
           {/* Heading 1: "Got the bA**$?" */}
@@ -59,7 +59,7 @@ export default function Home() {
         </div>
 
         {/* Second Div - Layout Structure */}
-        <div className="mt-[80px] flex justify-between gap-6 flex-1 min-h-0">
+        <div className="mt-[60px] flex justify-between gap-6 flex-1 min-h-0">
           {/* Left Panel - Form Container */}
           <div 
             className="rounded-xl flex flex-col self-start"
