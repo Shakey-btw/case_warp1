@@ -1,32 +1,35 @@
-# Case Warp1
+# Case Warp1 - Setup Guide
 
-A Next.js frontend application with a game-inspired design.
+## Quick Start
 
-## Getting Started
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-First, install the dependencies:
+2. **Start development server:**
+   ```bash
+   npm run dev
+   ```
 
-```bash
-npm install
-```
+3. **Open in browser:**
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
-Then, add your background image to the `public` folder as `background.jpg`.
+## Requirements
 
-Run the development server:
+- Node.js 18+
+- Modern browser (Chrome, Firefox, Safari, Edge)
+- Background image at `public/background_image.jpg`
 
-```bash
-npm run dev
-```
+## Compatibility Notes
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+✅ **Sound effects**: Use Web Audio API with fallback (`webkitAudioContext` for Safari). Works on all modern browsers and MacBooks.
 
-## Project Structure
+✅ **Fonts**: Loaded from Google Fonts (requires internet connection on first load).
 
-- `app/` - Next.js app directory
-  - `layout.tsx` - Root layout with font configuration
-  - `page.tsx` - Main page component
-  - `globals.css` - Global styles with Tailwind CSS
-- `public/` - Static assets (add your background image here)
-- `tailwind.config.ts` - Tailwind CSS configuration
-- `tsconfig.json` - TypeScript configuration
+✅ **Cross-platform**: Works identically on any MacBook - no platform-specific code.
 
+## Troubleshooting
+
+- **No sound?** Check browser/system volume. Web Audio API requires user interaction first (click anywhere).
+- **Fonts not loading?** Ensure internet connection for initial Google Fonts download.
